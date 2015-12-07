@@ -1,3 +1,7 @@
-# Juniper PyEZ Unit Testing Example
 [![Build Status](https://travis-ci.org/GIC-de/Juniper-PyEZ-Unit-Testing.svg)](https://travis-ci.org/GIC-de/Juniper-PyEZ-Unit-Testing)
-How to unit test your Juniper PyEZ project with pytest.
+
+# Juniper PyEZ Unit Testing Example
+How to unit test your [Juniper PyEZ](https://github.com/Juniper/py-junos-eznc)
+project with [pytest](https://pytest.org).
+
+__WORK IN PROGRESS__
