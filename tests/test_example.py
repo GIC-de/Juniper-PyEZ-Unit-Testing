@@ -23,23 +23,33 @@ import os
 # pytest fixtures
 # ------------------------------------------------------------------------------
 
+@pytest.fixture(scope="module")
+def rpc_replys():
+    """Dynamic Generated rpc-replys"""
+    return {}
+
+
 @patch('ncclient.manager.connect')
 @pytest.fixture(scope="module")
-def mocked_device(mock_connect):
+def mocked_device(mock_connect, rpc_replys):
     """Juniper PyEZ Device Fixture"""
     def mock_manager(*args, **kwargs):
-        if kwargs:
+        if 'device_params' in kwargs:
+            # open connection
             device_params = kwargs['device_params']
             device_handler = make_device_handler(device_params)
             session = SSHSession(device_handler)
             return Manager(session, device_handler)
         elif args:
-            fname = args[0].tag + '.xml'
-            fpath = os.path.join(os.path.dirname(__file__), 'rpc-reply', fname)
-            with open(fpath, 'r') as f:
-                xml = f.read()
-            rpc_reply = NCElement(
-                xml, dev._conn._device_handler.transform_reply())
+            # rpc request
+            rpc_request = args[0].tag
+            if rpc_request in rpc_replys:
+                xml = rpc_replys[rpc_request]
+            else:
+                fname = os.path.join(os.path.dirname(__file__), 'rpc-reply', rpc_request + '.xml')
+                with open(fname, 'r') as f:
+                    xml = f.read()
+            rpc_reply = NCElement(xml, dev._conn._device_handler.transform_reply())
             return rpc_reply
     mock_connect.side_effect = mock_manager
     dev = Device(host='1.1.1.1', user='juniper', gather_facts=False)
@@ -52,7 +62,7 @@ def mocked_device(mock_connect):
 # test functions
 # ------------------------------------------------------------------------------
 
-def test_example(mocked_device):
+def test_default(mocked_device, rpc_replys):
     dev = mocked_device
     result = dev.rpc.get_route_information(detail=True)
     assert result.findtext(".//destination-count") == "5"
