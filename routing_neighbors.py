@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 """Routing Neighbors
 
 Small script using Juniper PyEZ to display all routing neighbors.
@@ -8,7 +9,7 @@ Small script using Juniper PyEZ to display all routing neighbors.
 :Author:  Christian Giese
 :Contact: cgiese@juniper.net
 
-:Date:    12/07/2015
+:Date:    12/16/2015
 :Version: 0.1
 """
 from __future__ import unicode_literals
@@ -78,9 +79,10 @@ class Neighbors(Util):
     def display(self):
         """Display ALL Neighbors"""
         print("Neighbors:")
+        print("%-16s %-16s %s" % ('Interface', 'Hostname', 'Protocols'))
         for ifd, attributes in self.all().iteritems():
-            print("%s to %s with %s" % (ifd, attributes['hostname'],
-                  ", ".join(attributes['prototcols'])))
+            print("%-16s %-16s %s" % (ifd, attributes['hostname'],
+                  ", ".join(attributes['protocols'])))
 
 
 # ==============================================================================
@@ -93,19 +95,19 @@ if __name__ == '__main__':
         description="Routing Neighbors\nSmall script using Juniper PyEZ to display all routing neighbors.",
         epilog='Author: cgiese@juniper.net')
     parser.add_argument(
-        '-h', '--host', dest='action', action='store',
+        '--host', dest='host', action='store',
         help='host to connect',
         required=True)
     parser.add_argument(
-        '-u', '--user', dest='user', action='store',
+        '--user', dest='user', action='store',
         help='username',
         required=True)
     parser.add_argument(
-        '-p', '--password', dest='password', action='store',
+        '--password', dest='password', action='store',
         help='password',
         required=True)
     parameter = parser.parse_args()
 
     with Device(host=parameter.host, user=parameter.user, passwd=parameter.password, port=22) as dev:
         dev.bind(neighbors=Neighbors)
-        dev.bind.neighbors.display()
+        dev.neighbors.display()

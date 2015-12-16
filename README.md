@@ -9,7 +9,18 @@ __WORK IN PROGRESS__
 ### Mock PyEZ Device and RPC Replays
 ...
 
+__tests/pyez_mock.py__
 ```Python
+from __future__ import unicode_literals
+from mock import MagicMock, patch
+from jnpr.junos import Device
+from ncclient.manager import Manager, make_device_handler
+from ncclient.transport import SSHSession
+from ncclient.xml_ import NCElement
+import pytest
+import os
+
+
 # ------------------------------------------------------------------------------
 # pytest fixtures
 # ------------------------------------------------------------------------------
@@ -47,4 +58,16 @@ def mocked_device(mock_connect, rpc_replys):
     dev.open()
     dev._conn.rpc = MagicMock(side_effect=mock_manager)
     return dev
+```
+
+Within the test scripts just import `rpc_reply` and `mocked_device` from `pyez_mock`.
+
+__Example__
+```Python
+from pyez_mock import mocked_device, rpc_replys
+
+def test_default(mocked_device, rpc_replys):
+    dev = mocked_device
+    result = dev.rpc.get_route_information(detail=True)
+    assert result.findtext(".//destination-count") == "5"
 ```

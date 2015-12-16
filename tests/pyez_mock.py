@@ -56,13 +56,3 @@ def mocked_device(mock_connect, rpc_replys):
     dev.open()
     dev._conn.rpc = MagicMock(side_effect=mock_manager)
     return dev
-
-
-# ------------------------------------------------------------------------------
-# test functions
-# ------------------------------------------------------------------------------
-
-def test_default(mocked_device, rpc_replys):
-    dev = mocked_device
-    result = dev.rpc.get_route_information(detail=True)
-    assert result.findtext(".//destination-count") == "5"
