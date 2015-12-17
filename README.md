@@ -76,8 +76,9 @@ The rpc-reply must be a string formatted like:
 </rpc-reply>
 ```
 
-The rpc_reply_dict dict allows you to generate rpc-replys dynamically during test
-execution (e.g. test combinations of outputs, ...).
+The rpc_reply_dict dict allows you to generate a rpc-reply dynamically during test
+execution (e.g. test combinations of outputs, ...) as shown in test function
+`test_isis_dynamic` (file: `tests/test_routing_neighbors.py`).
 
 #### Mock Code
 
