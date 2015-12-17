@@ -19,13 +19,14 @@ import os
 
 
 def test_bind_to_pyez_dev(mocked_device):
-    """bind istance of neighbors to device """
+    """bind instance of neighbors to device """
     mocked_device.bind(neighbors=Neighbors)
     assert mocked_device.neighbors.display
 
 
 def test_isis(mocked_device):
     """isis adjacencys"""
+    # get isis adjacencys and check if number is 3
     isis = mocked_device.neighbors.isis
     assert len(isis) == 3
 
@@ -40,8 +41,8 @@ def test_isis_dynamic(mocked_device, rpc_replys):
         xml = JXML.remove_namespaces(xml)
     # updated rpc-reply (delete first adjacency)
     xml.find('.//isis-adjacency-information').remove(xml.find('.//isis-adjacency'))
-    # store in rpc_replys fixture
+    # store in rpc_replys dict (fixture)
     rpc_replys[rpc_request] = etree.tostring(xml)
-    # get isis neighbors and check if number has decreased from 3 to 2
+    # get isis adjacencys and check if number has decreased from 3 to 2
     isis = mocked_device.neighbors.isis
     assert len(isis) == 2
