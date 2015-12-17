@@ -16,13 +16,13 @@ continuous integration (CI) service.
 As an example there is a small pyez utility called `routing_neighbors.py`
 with corresponding unit tests in the directory `tests`.
 
-The tests will executed by the command
+The tests will executed with the command
 `python -m pytest -v --durations=10 --cov="routing_neighbors"`
 as shown in `.travis.yml`. __pytest__ auto discovery checks for all files in
 directory tests starting with `tests_` and executes all included functions
 starting with the same prefix.
 
-### Mock PyEZ Device and RPC Replays
+### Mock PyEZ Device and RPC Reply
 
 The following [pytest fixtures](https://pytest.org/latest/fixture.html) are
 [mock objects](https://en.wikipedia.org/wiki/Mock_object) for your
