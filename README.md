@@ -1,17 +1,85 @@
 [![Build Status](https://travis-ci.org/GIC-de/Juniper-PyEZ-Unit-Testing.svg)](https://travis-ci.org/GIC-de/Juniper-PyEZ-Unit-Testing)
 # Juniper PyEZ Unit Testing Example
-How to unit test your [Juniper PyEZ](https://github.com/Juniper/py-junos-eznc)
+How to [unit test](https://en.wikipedia.org/wiki/Unit_testing)
+your [Juniper PyEZ](https://github.com/Juniper/py-junos-eznc)
 project with [pytest](https://pytest.org).
 
-__WORK IN PROGRESS__
+__Unit Testing is no Replacement of Functional Testing__
+but it helps to improve code quality and reduces the time you need access to
+real environments. Unit testing allows you to test some code paths that are
+hard to reproduce with real environment (e.g. exception handling, ...) and is
+a great tool to prevent regression bugs.
 
+This tutorial is based on the python test framework __pytest__ and __travis__ as
+continuous integration (CI) service.
+
+As an example there is a small pyez utility called `routing_neighbors.py`
+with corresponding unit tests in the directory `tests`.
+
+The tests will executed by the command
+`python -m pytest -v --durations=10 --cov="routing_neighbors"`
+as shown in `.travis.yml`. __pytest__ auto discovery checks for all files in
+directory tests starting with `tests_` and executes all included functions
+starting with the same prefix.
 
 ### Mock PyEZ Device and RPC Replays
 
-The following [pytest fixtures](https://pytest.org/latest/fixture.html) are 
+The following [pytest fixtures](https://pytest.org/latest/fixture.html) are
 [mock objects](https://en.wikipedia.org/wiki/Mock_object) for your
 pyez device connection.
 
+This allows you to test your pyez application against an emulated environment.
+
+This mock uses the root element tag of the rpc-request to return the
+corresponding rpc-reply stored in the rpc_replys dict or as file in directory
+rpc-reply.
+
+For the following rpc-request ...
+```
+<get-route-information>
+    <detail/>
+</get-route-information>
+```
+this mock tries to get the rpc-reply from the rpc_replys dict using
+`get-route-information` as key otherwise it tries to get the reply from file
+`rpc-reply/get-route-information.xml`.
+
+The rpc-reply must be a string formatted like:
+```
+<rpc-reply xmlns:junos="http://xml.juniper.net/junos/14.1R4/junos">
+    <isis-adjacency-information xmlns="http://xml.juniper.net/junos/14.1R4/junos-routing" junos:style="brief">
+        <isis-adjacency>
+            <interface-name>ge-0/0/1.0</interface-name>
+            <system-name>MX1</system-name>
+            <level>2</level>
+            <adjacency-state>Up</adjacency-state>
+            <holdtime>24</holdtime>
+        </isis-adjacency>
+        <isis-adjacency>
+            <interface-name>ge-0/0/2.0</interface-name>
+            <system-name>MX2</system-name>
+            <level>2</level>
+            <adjacency-state>Up</adjacency-state>
+            <holdtime>19</holdtime>
+        </isis-adjacency>
+        <isis-adjacency>
+            <interface-name>ge-0/0/3.10</interface-name>
+            <system-name>MX3</system-name>
+            <level>1</level>
+            <adjacency-state>Up</adjacency-state>
+            <holdtime>24</holdtime>
+        </isis-adjacency>
+    </isis-adjacency-information>
+    <cli>
+        <banner>{master}</banner>
+    </cli>
+</rpc-reply>
+```
+
+The rpc_replys dict allows you to generate rpc-replys dynamically during test
+execution (e.g. test combinations of outputs, ...).
+
+#### Mock Code
 
 __tests/pyez_mock.py__
 ```Python
