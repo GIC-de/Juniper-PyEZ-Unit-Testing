@@ -31,7 +31,7 @@ pyez device connection.
 This allows you to test your pyez application against an emulated environment.
 
 This mock uses the root element tag of the rpc-request to return the
-corresponding rpc-reply stored in the rpc_replys dict or as file in directory
+corresponding rpc-reply stored in the rpc_reply_dict or as file in directory
 rpc-reply.
 
 For the following rpc-request ...
@@ -40,7 +40,7 @@ For the following rpc-request ...
     <detail/>
 </get-route-information>
 ```
-this mock tries to get the rpc-reply from the rpc_replys dict using
+this mock tries to get the rpc-reply from the rpc_reply_dict using
 `get-route-information` as key otherwise it tries to get the reply from file
 `rpc-reply/get-route-information.xml`.
 
@@ -76,7 +76,7 @@ The rpc-reply must be a string formatted like:
 </rpc-reply>
 ```
 
-The rpc_replys dict allows you to generate rpc-replys dynamically during test
+The rpc_reply_dict dict allows you to generate rpc-replys dynamically during test
 execution (e.g. test combinations of outputs, ...).
 
 #### Mock Code
@@ -98,14 +98,14 @@ import os
 # ------------------------------------------------------------------------------
 
 @pytest.fixture(scope="module")
-def rpc_replys():
+def rpc_reply_dict():
     """Dynamic Generated rpc-replys"""
     return {}
 
 
 @patch('ncclient.manager.connect')
 @pytest.fixture(scope="module")
-def mocked_device(mock_connect, rpc_replys):
+def mocked_device(mock_connect, rpc_reply_dict):
     """Juniper PyEZ Device Fixture"""
     def mock_manager(*args, **kwargs):
         if 'device_params' in kwargs:
@@ -117,8 +117,8 @@ def mocked_device(mock_connect, rpc_replys):
         elif args:
             # rpc request
             rpc_request = args[0].tag
-            if rpc_request in rpc_replys:
-                xml = rpc_replys[rpc_request]
+            if rpc_request in rpc_reply_dict:
+                xml = rpc_reply_dict[rpc_request]
             else:
                 fname = os.path.join(os.path.dirname(__file__), 'rpc-reply', rpc_request + '.xml')
                 with open(fname, 'r') as f:
@@ -136,9 +136,9 @@ Within the test scripts just import `rpc_reply` and `mocked_device` from `pyez_m
 
 __Example__
 ```Python
-from pyez_mock import mocked_device, rpc_replys
+from pyez_mock import mocked_device, rpc_reply_dict
 
-def test_default(mocked_device, rpc_replys):
+def test_default(mocked_device, rpc_reply_dict):
     dev = mocked_device
     result = dev.rpc.get_route_information(detail=True)
     assert result.findtext(".//destination-count") == "5"

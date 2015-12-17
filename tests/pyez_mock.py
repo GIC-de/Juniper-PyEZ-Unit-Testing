@@ -21,14 +21,14 @@ import os
 # ------------------------------------------------------------------------------
 
 @pytest.fixture(scope="module")
-def rpc_replys():
+def rpc_reply_dict():
     """Dynamic Generated rpc-replys"""
     return {}
 
 
 @patch('ncclient.manager.connect')
 @pytest.fixture(scope="module")
-def mocked_device(mock_connect, rpc_replys):
+def mocked_device(mock_connect, rpc_reply_dict):
     """Juniper PyEZ Device Fixture"""
     def mock_manager(*args, **kwargs):
         if 'device_params' in kwargs:
@@ -40,8 +40,8 @@ def mocked_device(mock_connect, rpc_replys):
         elif args:
             # rpc request
             rpc_request = args[0].tag
-            if rpc_request in rpc_replys:
-                xml = rpc_replys[rpc_request]
+            if rpc_request in rpc_reply_dict:
+                xml = rpc_reply_dict[rpc_request]
             else:
                 fname = os.path.join(os.path.dirname(__file__), 'rpc-reply', rpc_request + '.xml')
                 with open(fname, 'r') as f:
