@@ -1,18 +1,16 @@
-"""Test PyEZ Example Module
-
-:Organization:  Juniper Networks
-:Copyright:     Juniper Networks
+"""Test PyEZ Routing Neighbors Module
 
 :Author:  Christian Giese
 :Contact: cgiese@juniper.net
 
-:Date:    12/16/2015
+:Date:    12/17/2015
 :Version: 0.1
 """
 from __future__ import unicode_literals
 from pyez_mock import rpc_replys, mocked_device
 from routing_neighbors import Neighbors
 from lxml import etree
+from jnpr.junos import jxml as JXML
 import os
 
 # ------------------------------------------------------------------------------
@@ -39,8 +37,9 @@ def test_isis_dynamic(mocked_device, rpc_replys):
     fname = os.path.join(os.path.dirname(__file__), 'rpc-reply', rpc_request + '.xml')
     with open(fname, 'r') as f:
         xml = etree.fromstring(f.read())
+        xml = JXML.remove_namespaces(xml)
     # updated rpc-reply (delete first adjacency)
-    xml[0].remove(xml[0][0])
+    xml.find('.//isis-adjacency-information').remove(xml.find('.//isis-adjacency'))
     # store in rpc_replys fixture
     rpc_replys[rpc_request] = etree.tostring(xml)
     # get isis neighbors and check if number has decreased from 3 to 2

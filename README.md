@@ -7,7 +7,11 @@ __WORK IN PROGRESS__
 
 
 ### Mock PyEZ Device and RPC Replays
-...
+
+The following [pytest fixtures](https://pytest.org/latest/fixture.html) are 
+[mock objects](https://en.wikipedia.org/wiki/Mock_object) for your
+pyez device connection.
+
 
 __tests/pyez_mock.py__
 ```Python

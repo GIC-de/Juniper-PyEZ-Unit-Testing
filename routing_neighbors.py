@@ -3,13 +3,10 @@
 
 Small script using Juniper PyEZ to display all routing neighbors.
 
-:Organization:  Juniper Networks
-:Copyright:     Juniper Networks
-
 :Author:  Christian Giese
 :Contact: cgiese@juniper.net
 
-:Date:    12/16/2015
+:Date:    12/17/2015
 :Version: 0.1
 """
 from __future__ import unicode_literals
