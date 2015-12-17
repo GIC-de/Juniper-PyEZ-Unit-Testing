@@ -4,47 +4,48 @@ How to [unit test](https://en.wikipedia.org/wiki/Unit_testing)
 your [Juniper PyEZ](https://github.com/Juniper/py-junos-eznc)
 project with [pytest](https://pytest.org).
 
-__Unit Testing is no Replacement of Functional Testing__
-but it helps to improve code quality and reduces the time you need access to
-real environments. Unit testing allows you to test some code paths that are
-hard to reproduce with real environment (e.g. exception handling, ...) and is
-a great tool to prevent regression bugs.
+__Unit Testing does not replace functional testing__, however, it does help to
+improve code quality and reduce time required to access real environments.
+Unit testing enables you to test code paths that are difficult to reproduce
+with a real environment, such as exception handling, and prevent regression bugs.
 
-This tutorial is based on the python test framework __pytest__ and __travis__ as
-continuous integration (CI) service.
 
-As an example there is a small pyez utility called `routing_neighbors.py`
+This example is based on the python test framework __pytest__ and __travis__
+ as continuous integration (CI) service.
+
+For this example, there is a small pyez utility called `routing_neighbors.py`
 with corresponding unit tests in the directory `tests`.
 
-The tests will executed with the command
+You execute the tests with the command:
 `python -m pytest -v --durations=10 --cov="routing_neighbors"`
-as shown in `.travis.yml`. __pytest__ auto discovery checks for all files in
-directory tests starting with `tests_` and executes all included functions
-starting with the same prefix.
+as shown in `.travis.yml`.
+
+__pytest__ auto discovery checks for all files in directory tests starting with
+`tests_` and executes all included functions beginning with the same prefix.
 
 ### Mock PyEZ Device and RPC Reply
 
 The following [pytest fixtures](https://pytest.org/latest/fixture.html) are
-[mock objects](https://en.wikipedia.org/wiki/Mock_object) for your
-pyez device connection.
+[mock objects](https://en.wikipedia.org/wiki/Mock_object) for your PyEZ device
+connection which allow you to test your PyEZ application against an emulated
+environment.
 
-This allows you to test your pyez application against an emulated environment.
+This mock object uses the root element tag of the rpc-request to return the
+corresponding rpc-reply stored in the `rpc_reply_dict` or as a file in the
+`directory rpc-reply`.
 
-This mock uses the root element tag of the rpc-request to return the
-corresponding rpc-reply stored in the rpc_reply_dict or as file in directory
-rpc-reply.
 
-For the following rpc-request ...
+For the following rpc-request:
 ```
 <get-route-information>
     <detail/>
 </get-route-information>
 ```
-this mock tries to get the rpc-reply from the rpc_reply_dict using
-`get-route-information` as key otherwise it tries to get the reply from file
-`rpc-reply/get-route-information.xml`.
+This mock object attempts to retrieve the rpc-reply from the rpc_reply_dict
+using `get-route-information` as the key; otherwise, it attempts to retrieve
+the reply from the file `rpc-reply/get-route-information.xml`.
 
-The rpc-reply must be a string formatted like:
+You must format the rpc-reply as a string similar to the following:
 ```
 <rpc-reply xmlns:junos="http://xml.juniper.net/junos/14.1R4/junos">
     <isis-adjacency-information xmlns="http://xml.juniper.net/junos/14.1R4/junos-routing" junos:style="brief">
@@ -76,9 +77,11 @@ The rpc-reply must be a string formatted like:
 </rpc-reply>
 ```
 
-The rpc_reply_dict dict allows you to generate a rpc-reply dynamically during test
-execution (e.g. test combinations of outputs, ...) as shown in test function
+The rpc_reply_dict dict allows you to generate a rpc-reply dynamically during
+test execution, such as during test combinations of outputs.
+It is shown in the test function
 `test_isis_dynamic` (file: `tests/test_routing_neighbors.py`).
+
 
 #### Mock Code
 
@@ -133,7 +136,9 @@ def mocked_device(mock_connect, rpc_reply_dict):
     return dev
 ```
 
-Within the test scripts just import `rpc_reply_dict` and `mocked_device` from `pyez_mock`.
+Within the test scripts, you then just import  `rpc_reply_dict` and
+`mocked_device` from `pyez_mock`.
+
 
 __Example__
 ```Python
