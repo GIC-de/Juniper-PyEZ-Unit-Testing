@@ -133,7 +133,7 @@ def mocked_device(mock_connect, rpc_reply_dict):
     return dev
 ```
 
-Within the test scripts just import `rpc_reply` and `mocked_device` from `pyez_mock`.
+Within the test scripts just import `rpc_reply_dict` and `mocked_device` from `pyez_mock`.
 
 __Example__
 ```Python
