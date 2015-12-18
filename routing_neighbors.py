@@ -20,7 +20,7 @@ from jnpr.junos.op.ospf import OspfNeighborTable
 
 from collections import defaultdict
 import argparse
-
+import socket
 
 # ==============================================================================
 # Classes and Functions
@@ -70,6 +70,12 @@ class Neighbors(Util):
             neighbors[ifd]['protocols'].add('isis')
         for ospf in self.ospf:
             ifd, unit = ospf.interface_name.split('.')
+            if 'hostname' not in neighbors[ifd]:
+                try:
+                    dns_name = socket.gethostbyaddr(ospf.neighbor_id)[0]
+                    neighbors[ifd]['hostname'] = dns_name
+                except socket.herror:
+                    neighbors[ifd]['hostname'] = ospf.neighbor_id
             neighbors[ifd]['protocols'].add('ospf')
         return neighbors
 
