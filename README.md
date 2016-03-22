@@ -50,7 +50,7 @@ the reply from the file `rpc-reply/get-route-information.xml` relative to
 working directory. The parameters of the rpc-request will be ignored.
 
 You must format the rpc-reply as a string with a valid XML structure and
-`rpc-reply` as rot element:
+`rpc-reply` as root element:
 
 ```
 from pyez_mock.device import rpc_reply_dict
