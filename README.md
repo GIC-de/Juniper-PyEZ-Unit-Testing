@@ -47,7 +47,8 @@ For the following rpc-request:
 The mocked PyEZ device attempts to retrieve the rpc-reply from the rpc_reply_dict
 using `get-route-information` as the key; otherwise, it attempts to retrieve
 the reply from the file `rpc-reply/get-route-information.xml` relative to
-working directory. The parameters of the rpc-request will be ignored.
+working directory. The parameters of the rpc-request will be ignored
+(e.g. <detail/>).
 
 You must format the rpc-reply as a string with a valid XML structure and
 `rpc-reply` as root element:

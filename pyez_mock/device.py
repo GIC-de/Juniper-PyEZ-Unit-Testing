@@ -16,7 +16,6 @@ from ncclient.xml_ import NCElement
 import pytest
 import os
 
-__all__ = ["rpc_reply_dict", "device_facts", "device", "pytest_device"]
 
 # dynamic generated rpc-replys
 rpc_reply_dict = {}
